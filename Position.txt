@@ -1,0 +1,16 @@
+Back to Menu (green) :X:1107/Y:629
+Hero Button : X:750/Y:212
+Close Hero : X:718/Y:741
+
+
+Start Work
+Hero#1 X:606/Y:294
+Hero#2 X:615/Y:366
+Hero#3 X:611/Y:437
+Hero#4 X:612/Y:507
+Hero#5 X:606/Y:584
+Scroll down 4 times
+Click at Hero#5 again
+
+New MAP #
+X:694/Y:593

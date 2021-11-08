@@ -1,0 +1,6 @@
+pyautogui
+schedule
+win32core==221.35
+win32gui==221.6
+pypiwin32==220
+PyAutoGUI==0.9.36
