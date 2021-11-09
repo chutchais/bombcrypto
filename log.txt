@@ -1,4 +1,4 @@
 Traceback (most recent call last):
-  File "C:\Users\Chutchai\Documents\GitHub\Games\BomCrypto\setup.py", line 298, in main
-    time.sleep(0.001)
+  File "C:\Users\Chutchai\Documents\GitHub\Games\BomCrypto\setup.py", line 280, in main
+    time.sleep(0.5)
 KeyboardInterrupt

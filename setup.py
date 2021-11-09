@@ -275,24 +275,27 @@ def main():
 
 
             while True:
-                a = win32api.GetKeyState(0x01)
-                b = win32api.GetKeyState(0x02)
+                x1,y1 = pyautogui.position()
+                print (f'X:{x1}/Y:{y1}')
+                time.sleep(0.5)
+                # a = win32api.GetKeyState(0x01)
+                # b = win32api.GetKeyState(0x02)
 
-                if a != state_left:  # Button state changed
-                    state_left = a
-                    print(a)
-                    if a < 0:
-                        print('Left Button Pressed')
-                    else:
-                        print('Left Button Released')
-                        # w.saveFirstDataPos('ystart')
-                        x1,y1 = pyautogui.position()
-                        print (f'X:{x1}/Y:{y1}')
-                        yStart = False
-                        yStop = True
-                        f = open('pos.txt', "a")
-                        f.writelines(f'X:{x1}/Y:{y1}\n')
-                        f.close()
+                # if a != state_left:  # Button state changed
+                #     state_left = a
+                #     print(a)
+                #     if a < 0:
+                #         print('Left Button Pressed')
+                #     else:
+                #         print('Left Button Released')
+                #         # w.saveFirstDataPos('ystart')
+                #         x1,y1 = pyautogui.position()
+                #         print (f'X:{x1}/Y:{y1}')
+                #         yStart = False
+                #         yStop = True
+                #         f = open('pos.txt', "a")
+                #         f.writelines(f'X:{x1}/Y:{y1}\n')
+                #         f.close()
 
 
                 time.sleep(0.001)

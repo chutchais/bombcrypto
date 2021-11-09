@@ -123,19 +123,27 @@ startGame           = 719,420
 startNewMap         = 694,593
 
 def click_start_new_game():
-    print (f'Start new MAP...')
+    from datetime import datetime
+    now = datetime.now()
+    print (f'Start new MAP on {now}')
+    pyautogui.moveTo(400,400)
     time.sleep(1)
     pyautogui.moveTo(startNewMap)
+    time.sleep(1)
+    pyautogui.click()
 
 
 def working():
-    print (f'To Menu')
+    delay_click = 2
+    from datetime import datetime
+    now = datetime.now()
+    print (f'Set Working on {now}')
     pyautogui.moveTo(backMenu)
     pyautogui.click()
-    time.sleep(1)
+    time.sleep(delay_click)
     pyautogui.moveTo(heroButton)
     pyautogui.click()
-    time.sleep(1)
+    time.sleep(delay_click)
     # Click Working for all hero
     working_x           = 612
     working_y           = 300
@@ -146,7 +154,7 @@ def working():
         working_y = working_y + working_y_next
         
         pyautogui.click()
-        time.sleep(1)
+        time.sleep(delay_click)
     # --------------------------
 
     # Next another , No need to move mouse
@@ -162,28 +170,28 @@ def working():
         pyautogui.scroll(-1)
         time.sleep(0.5)
         pyautogui.click()
-        time.sleep(1)
+        time.sleep(delay_click)
     
     # Move to Last hero
     x,y = pyautogui.position()
     pyautogui.moveTo(x,y+ 20)
-    time.sleep(1)
+    time.sleep(delay_click)
     pyautogui.click()
-    time.sleep(1)
+    time.sleep(delay_click)
 
 
     pyautogui.moveTo(closeCharecter)
     pyautogui.click()
-    time.sleep(1)
+    time.sleep(delay_click)
     pyautogui.moveTo(startGame)
     pyautogui.click()
-    time.sleep(1)
+    time.sleep(delay_click)
 
 
 import schedule
 import time
-schedule.every(60).seconds.do(click_start_new_game)
-schedule.every(30).seconds.do(working)
+schedule.every(60*5).seconds.do(click_start_new_game)
+schedule.every(60*60).seconds.do(working)
 
 # working()
 
