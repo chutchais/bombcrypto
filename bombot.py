@@ -15,18 +15,29 @@ isWorking = False
 
 def click_start_new_game(settings):
     if isWorking : #if set Working , will reject
-        pass
+        return None
 
     from datetime import datetime
     now = datetime.now()
-    print (f'Start new MAP on {now}')
+    
     for account in settings['accounts']:
-        startNew_x,startNew_y = account['startNewMap']
-        pyautogui.moveTo(startNew_x+10,startNew_y+10)
-        time.sleep(1)
+        print (f'Start new MAP on {account["maximize"]} on {now}')
+        maximize            = account['maximize']
+        if maximize != [0,0] : #if setting program will maximize window first
+            pyautogui.moveTo(maximize)
+            pyautogui.click()
+            time.sleep(5)
+        # startNew_x,startNew_y = account['startNewMap']
+        # pyautogui.moveTo(startNew_x+10,startNew_y+10)
+        # time.sleep(1)
         pyautogui.moveTo(account['startNewMap'])
         time.sleep(1)
         pyautogui.click()
+        minimize            = settings['minimize']
+        if minimize != [0,0] : #if setting program will minimize window
+            pyautogui.moveTo(minimize)
+            pyautogui.click()
+            time.sleep(5)
 
 
 def schedule_working(settings):
@@ -148,9 +159,9 @@ schedule_working (settings)
 
 
 # Click for detect window saver mode
-schedule.every(60).seconds.do(click_start_new_game,settings)
+schedule.every(5).minutes.do(click_start_new_game,settings)
 # Main Job interval time (minutes)
-schedule.every(settings['loop']*60).seconds.do(schedule_working ,settings)
+schedule.every(settings['loop']).minutes.do(schedule_working ,settings)
 
 while True:
 	schedule.run_pending()
