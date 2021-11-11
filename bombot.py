@@ -1,153 +1,78 @@
-import win32gui,win32con,win32api,win32ui
-# import re
 import pyautogui
+pyautogui.FAILSAFE = False
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+# hero                = 11
+# backMenu            = 260,140
+# heroButton          = 1105,638
+# firstHeroWorking    = 0,0
+# lastHeroWorking     = 0,0
+# working_y_next      = 70
+# closeCharecter      = 755,214
+# startGame           = 719,420
+# startNewMap         = 694,593
 
+isWorking = False
 
-class WindowMgr:
-    """Encapsulates some calls to the winapi for window management"""
-    settingFile =''
+def click_start_new_game(settings):
+    if isWorking : #if set Working , will reject
+        pass
 
-
-    def __init__ (self):
-        """Constructor"""
-        self.hwnd = None
-
-    def find_window(self,title):
-        try:
-            self.hwnd = win32gui.FindWindow(None, title)
-            assert self.hwnd
-            return self.hwnd
-        except:
-            pyautogui.alert(text='Not found program name ' + title + '\n' 
-                            'Please open program before excute script', title='Unable to open program', button='OK')
-            # print ('Not found program')
-            return None
-
-
-    def set_onTop(self,hwnd):
-        win32gui.SetForegroundWindow(hwnd)
-        return win32gui.GetWindowRect(hwnd)
-
-
-
-    def Maximize(self,hwnd):
-        win32gui.ShowWindow(hwnd,win32con.SW_RESTORE)#, win32con.SW_MAXIMIZE
-
-    def get_mouseXY(self):
-        return win32gui.GetCursorPos()
-
-    def set_mouseXY(self):
-        import os.path
-        import json
-        x,y,w,h = win32gui.GetWindowRect(self.hwnd)
-        print ('Current Window X : %s  Y: %s' %(x,y))
-        fname = 'setting.json'
-        if os.path.isfile(fname) :
-            dict = eval(open(fname).read())
-            x1 = dict['x']
-            y1 = dict['y']
-            print ('Setting X : %s  Y: %s' %(x1,y1))
-        win32api.SetCursorPos((x+x1,y+y1))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x+x1, y+y1, 0, 0)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x+x1, y+y1, 0, 0)
-        print ('Current Mouse X %s' % self.get_mouseXY()[0])
-        print ('Current Mouse Y %s' % self.get_mouseXY()[1])
-
-
-    def saveFirstDataPos(self):
-        x,y,w,h = win32gui.GetWindowRect(self.hwnd)
-        print ('Window X : %s  Y: %s' %(x,y))
-        x1,y1 = self.get_mouseXY()
-        print ('Mouse X : %s  Y: %s' %(x1,y1))
-        data={}
-        data['x'] = x1-x
-        data['y'] = y1-y
-        # f = open("setting.json", "w")
-        # self.settingFile
-        f = open(settingFile, "w")
-        f.write(str(data))
-
-        f.close()
-
-    def wait(self,seconds=1,message=None):
-        """pause Windows for ? seconds and print
-an optional message """
-        win32api.Sleep(seconds*1000)
-        if message is not None:
-            win32api.keybd_event(message, 0,0,0)
-            time.sleep(.05)
-            win32api.keybd_event(message,0 ,win32con.KEYEVENTF_KEYUP ,0)
-
-    def typer(self,stringIn=None):
-        PyCWnd = win32ui.CreateWindowFromHandle(self.hwnd)
-        for s in stringIn :
-            if s == "\n":
-                self.hwnd.SendMessage(win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
-                self.hwnd.SendMessage(win32con.WM_KEYUP, win32con.VK_RETURN, 0)
-            else:
-                print ('Ord %s' % ord(s))
-                PyCWnd.SendMessage(win32con.WM_CHAR, ord(s), 0)
-        PyCWnd.UpdateWindow()
-
-    def WindowExists(windowname):
-        try:
-            win32ui.FindWindow(None, windowname)
-
-        except win32ui.error:
-            return False
-        else:
-            return True
-
-
-# Start Program
-x = 0
-y = 0 
-w = 0
-h = 0
-
-hero                = 11
-backMenu            = 260,140
-heroButton          = 1105,638
-closeCharecter      = 755,214
-startGame           = 719,420
-startNewMap         = 694,593
-
-def click_start_new_game():
     from datetime import datetime
     now = datetime.now()
     print (f'Start new MAP on {now}')
-    pyautogui.moveTo(400,400)
-    time.sleep(1)
-    pyautogui.moveTo(startNewMap)
-    time.sleep(1)
-    pyautogui.click()
+    for account in settings['accounts']:
+        startNew_x,startNew_y = account['startNewMap']
+        pyautogui.moveTo(startNew_x+10,startNew_y+10)
+        time.sleep(1)
+        pyautogui.moveTo(account['startNewMap'])
+        time.sleep(1)
+        pyautogui.click()
 
 
-def working():
-    delay_click = 2
+def schedule_working(settings):
+    global isWorking
+    isWorking = True
+
+    minimize    = settings['minimize']
+
+    for account in settings['accounts']:
+        working(account,minimize)
+        time.sleep(1)
+
+    isWorking = False
+
+# Set working for individual Account
+def working(account_dict,minimize=[0,0]):
     from datetime import datetime
     now = datetime.now()
-    print (f'Set Working on {now}')
+    print (f'Set Working account {account_dict["name"]} on {now}')
+    delay_click = 2
+
+    hero                = account_dict['hero_count']
+    backMenu            = account_dict['backMenu']
+    heroButton          = account_dict['heroButton']
+    firstHeroWorking    = account_dict['firstHeroWorking']
+    lastHeroWorking     = account_dict['lastHeroWorking']
+    working_y_next      = account_dict['working_y_next']
+    closeCharecter      = account_dict['closeCharecter']
+    startGame           = account_dict['startGame']
+    # Added on Nov 11,2021 -- To support Maximize window before start.
+    maximize            = account_dict['maximize']
+    if maximize != [0,0] : #if setting program will maximize window first
+        pyautogui.moveTo(maximize)
+        pyautogui.click()
+        time.sleep(delay_click)
+
+    
     pyautogui.moveTo(backMenu)
     pyautogui.click()
     time.sleep(delay_click)
     pyautogui.moveTo(heroButton)
     pyautogui.click()
     time.sleep(delay_click)
-    # Click Working for all hero
-    working_x           = 612
-    working_y           = 300
-    working_y_next      = 70
+
+    working_x,working_y = firstHeroWorking
+    
     # First 5 Hero
     for i in range(5):
         pyautogui.moveTo(working_x,working_y)
@@ -173,11 +98,9 @@ def working():
         time.sleep(delay_click)
     
     # Move to Last hero
-    x,y = pyautogui.position()
-    pyautogui.moveTo(x,y+ 20)
+    pyautogui.moveTo(lastHeroWorking)
     time.sleep(delay_click)
     pyautogui.click()
-    time.sleep(delay_click)
 
 
     pyautogui.moveTo(closeCharecter)
@@ -187,13 +110,47 @@ def working():
     pyautogui.click()
     time.sleep(delay_click)
 
+    if minimize != [0,0] : #if setting program will minimize window
+        pyautogui.moveTo(minimize)
+        pyautogui.click()
+
+import sys
+settings = {
+            'loop' : 1, # Minutes
+            'minimize' : [0,0], #all account using same Minimize Position
+            'accounts':[
+                {
+                    'name':'Account1',
+                    'hero_count'        : 15,
+                    'backMenu'          : [258,128],
+                    'heroButton'        : [1111,630],
+                    'firstHeroWorking'  : [612,291],
+                    'lastHeroWorking'   : [612,601],
+                    'working_y_next'    : 72,
+                    'closeCharecter'    : [753,211],
+                    'startGame'         : [704,404],
+                    'startNewMap'       : [694,593],
+                    'maximize'          : [0,0]
+                },
+                ]
+        }
+
 
 import schedule
 import time
-schedule.every(60*5).seconds.do(click_start_new_game)
-schedule.every(60*60).seconds.do(working)
 
-# working()
+# Initial run on first time , after 30 secs.
+time_delay = 30
+print(f'Program started , waiting for {time_delay} Secs....')
+time.sleep(time_delay)
+schedule_working (settings)
+
+sys.exit()
+
+# Click for detect window saver mode
+schedule.every(30).seconds.do(click_start_new_game,settings)
+# Main Job interval time (minutes)
+schedule.every(settings['loop']*60).seconds.do(schedule_working ,settings)
 
 while True:
 	schedule.run_pending()
