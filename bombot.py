@@ -61,7 +61,7 @@ def working(account_dict,minimize=[0,0]):
     if maximize != [0,0] : #if setting program will maximize window first
         pyautogui.moveTo(maximize)
         pyautogui.click()
-        time.sleep(delay_click)
+        time.sleep(10)
 
     
     pyautogui.moveTo(backMenu)
@@ -94,15 +94,16 @@ def working(account_dict,minimize=[0,0]):
         time.sleep(0.5)
         pyautogui.scroll(-1)
         time.sleep(0.5)
-        pyautogui.click()
-        time.sleep(delay_click)
+        if i < (hero-6) :
+            pyautogui.click()
+            time.sleep(delay_click)
     
     # Move to Last hero
     pyautogui.moveTo(lastHeroWorking)
     time.sleep(delay_click)
     pyautogui.click()
 
-
+    time.sleep(delay_click)
     pyautogui.moveTo(closeCharecter)
     pyautogui.click()
     time.sleep(delay_click)
@@ -116,8 +117,8 @@ def working(account_dict,minimize=[0,0]):
 
 import sys
 settings = {
-            'loop' : 1, # Minutes
-            'minimize' : [0,0], #all account using same Minimize Position
+            'loop' : 120, # Minutes
+            'minimize' : [1316,46], #all account using same Minimize Position
             'accounts':[
                 {
                     'name':'Account1',
@@ -130,7 +131,7 @@ settings = {
                     'closeCharecter'    : [753,211],
                     'startGame'         : [704,404],
                     'startNewMap'       : [694,593],
-                    'maximize'          : [0,0]
+                    'maximize'          : [611,52]
                 },
                 ]
         }
@@ -145,10 +146,9 @@ print(f'Program started , waiting for {time_delay} Secs....')
 time.sleep(time_delay)
 schedule_working (settings)
 
-sys.exit()
 
 # Click for detect window saver mode
-schedule.every(30).seconds.do(click_start_new_game,settings)
+schedule.every(60).seconds.do(click_start_new_game,settings)
 # Main Job interval time (minutes)
 schedule.every(settings['loop']*60).seconds.do(schedule_working ,settings)
 
